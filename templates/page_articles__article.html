@@ -137,14 +137,14 @@
 {% endblock best-week-articles %}
 
 {% block random-author %}
-	{% if len(random_author) != 0 %}
-	<div class="b-footer-author">
-		<h1 class="b-footer-author__header"><span class="b-footer-author__header-text">АВТОРЫ</span></h1>
-		<a href="{% url 'articles:author' random_author.slug %}" class="b-footer-author__link">
-			<img src="{{ random_author.image.url }}" alt="{{ random_author }}" class="b-footer-author__image">
-			<div class="b-footer-author__text">{{ random_author.name }}<br>{{ random_author.surname|upper }}</div>
-		</a>
-	</div>
+	{% if random_author != None %}
+		<div class="b-footer-author">
+			<h1 class="b-footer-author__header"><span class="b-footer-author__header-text">АВТОРЫ</span></h1>
+			<a href="{% url 'articles:author' random_author.slug %}" class="b-footer-author__link">
+				<img src="{{ random_author.image.url }}" alt="{{ random_author }}" class="b-footer-author__image">
+				<div class="b-footer-author__text">{{ random_author.name }}<br>{{ random_author.surname|upper }}</div>
+			</a>
+		</div>
 	{% endif %}
 {% endblock random-author %}
 

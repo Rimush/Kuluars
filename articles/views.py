@@ -56,6 +56,7 @@ def random_authors():
         return authors[:4]
     
 def more_articles(category, article=None):
+    print(article)
     if article == None:
         return None
     else:
@@ -114,7 +115,7 @@ def article(request, slug):
     # считаем просмотры
     article.views = article.views + 1
     article.save()
-    print (article.tags.all())
+
     # Если автора нет
     if article.author == None: 
         author_articles = None
@@ -162,7 +163,7 @@ def article(request, slug):
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
-    context.update({'more_articles': more_articles('article', article.id)})
+    context.update({'more_articles': more_articles('article', article)})
     context.update({'last_comments': last_comments()})
     
     return render(request, 'page_articles__article.html', context)

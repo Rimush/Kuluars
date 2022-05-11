@@ -60,7 +60,7 @@ class Article(models.Model):
     def save(self):
         super(Article, self).save()
         if not self.slug:
-            self.slug = slugify(self.title) + '-' + str(self.id)
+            self.slug = slugify(self.title, True) + '-' + str(self.id)
             super(Article, self).save()
             
     class Meta:
