@@ -7,15 +7,16 @@ from os.path import splitext
 from hashlib import blake2b
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
+from django.core.validators import FileExtensionValidator
 
-def get_name(instance, filename):
+'''def get_name(instance, filename):
     s = str(datetime.now().timestamp()) + filename
     h = blake2b(digest_size=4)
     h.update(s.encode('utf-8'))
     h = h.hexdigest()
     
-    return '%s_%s%s' % (splitext(filename)[0], h, splitext(filename)[1])
-
+    return '%s_%s%s' % (splitext(filename)[0], h, splitext(filename)[1])'''
+    
 class Author(models.Model):
     surname = models.CharField(max_length=256, verbose_name='Фамилия')
     name = models.CharField(max_length=256, verbose_name='Имя')
@@ -26,7 +27,7 @@ class Author(models.Model):
     def save(self):
         super(Author, self).save()
         if not self.slug:
-            self.slug = slugify(self.surname) + '-' + slugify(self.name) + '-' + str(self.id)
+            self.slug = slugify(self.surname, True) + '-' + slugify(self.name, True) + '-' + str(self.id)
             super(Author, self).save()
             
     class Meta:
@@ -72,8 +73,17 @@ class Article(models.Model):
         return f"{self.title}"
         
 class Journal(models.Model):
+
+    def get_name(self, filename):
+        s = str(datetime.now().timestamp()) + filename
+        h = blake2b(digest_size=2)
+        h.update(s.encode('utf-8'))
+        h = h.hexdigest()
+        return F"pdf/{self.name}_{h}{splitext(filename)[1]}"
+
     name = models.CharField(max_length=256)
-    
+    pdf = models.FileField(validators=[FileExtensionValidator(['pdf'])], upload_to=get_name)
+
     def save(self):
         super(Journal, self).save()
             
