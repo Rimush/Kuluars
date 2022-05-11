@@ -1,0 +1,88 @@
+{% extends "page_main.html" %}
+
+{% block main-page-articles %}
+    {% for article in articles %}
+		<div class="b-main-page-article">
+			<img src="{{ article.image.url }}" class="b-main-page-article__image" alt="{{ article.title }}">
+			<a href="{% url 'articles:article' article.slug %}" class="b-main-page-article__link">{{ article.title }}</a>
+		</div>
+    {% empty %}
+		<h3></h3>
+    {% endfor %}
+{% endblock main-page-articles %}
+
+{% block main-page-news %}
+	{% for new in news %}				
+		<a href="{% url 'articles:new' new.slug %}" class="b-article b-article--i2">
+			<div class="b-article__image-wrap-200"><img src="{{ new.image.url }}" class="b-article__image" alt="{{ new.title }}"></div>
+			<h2 class="b-article__header">{{ new.title }}</h2>
+			<div class="b-article__info">
+				<div class="b-article__date">{{ new.created|date:"d E H:i" }}</div>
+				<div class="b-article__views">{{ new.views }}</div>
+				{% if new.author %}
+					<div class="b-article__author">Автор: {{ new.author.name }} {{ new.author.surname }}</div>
+				{% endif %}
+			</div>
+		</a>
+	{% empty %}
+		<h3></h3>
+	{% endfor %}				
+{% endblock main-page-news %}
+
+{% block best-week-articles %}
+	<div class="b-footer-week">
+		<h1 class="b-footer-week__header"><span class="b-footer-week__header-text">ПОПУЛЯРНОЕ ЗА НЕДЕЛЮ</span></h1>
+		<ul class="b-footer-week__articles">
+			{% for article in best_week_articles %}
+				<li class="b-footer-week__article">
+					{% if article.category == 'article' %}
+						<a href="{% url 'articles:article' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
+					{% endif %}
+					{% if article.category == 'news' %}
+						<a href="{% url 'articles:new' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
+					{% endif %}
+					</a>
+				</li>
+			{% empty %}
+				<li class="b-footer-week__article">Статей нет</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock best-week-articles %}
+
+{% block random-author %}
+	<div class="b-footer-author">
+		<h1 class="b-footer-author__header"><span class="b-footer-author__header-text">АВТОРЫ</span></h1>
+		{% if random_author != None %}
+			<a href="{% url 'articles:author' random_author.slug %}" class="b-footer-author__link">
+				<img src="{{ random_author.image.url }}" alt="{{ random_author }}" class="b-footer-author__image">
+				<div class="b-footer-author__text">{{ random_author.name }}<br>{{ random_author.surname|upper }}</div>
+			</a>
+		{% else %}
+			<div class="b-footer-author__link">Авторов нет</div>
+		{% endif %}
+	</div>
+{% endblock random-author %}
+
+{% block last-comments %}
+	<div class="b-footer-comments">
+		<h1 class="b-footer-comments__header"><span class="b-footer-comments__header-text">ПОСЛЕДНИЕ КОММЕНТАРИИ </span></h1>
+		<ul class="b-footer-comments__articles">
+			{% for comment in last_comments %}
+				<li class="b-footer-comments__article">
+					{% if comment.article.category == 'article' %}
+						<a href="{% url 'articles:article' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
+					{% endif %}
+					{% if comment.article.category == 'news' %}
+						<a href="{% url 'articles:new' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
+					{% endif %}
+						{{ comment.article.title_short }}
+						<span class="b-footer-comments__comment" title="{{ comment.content }}"><span class="b-footer-comments__comment-text">{{ comment.content_short }}</span></span>
+					</a>
+				</li>
+			{% empty %}
+				<li class="b-footer-comments__article">Комментариев нет</li>
+			{% endfor %}		
+		</ul>
+	</div>
+{% endblock last-comments %}

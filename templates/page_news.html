@@ -1,0 +1,43 @@
+{% load static %}
+<html>
+<head>
+	{% include "block_head.html" %}
+</head>
+<body>
+	<div class="b-main-wrapper">
+		{% include "block_logo.html" %}
+		{% include "block_menu_top.html" %}
+		<div class="b-content">
+			<div class="b-content-full">
+				<div class="b-sub-page-articles">
+					<h1 class="b-sub-page-articles__header"><span class="b-sub-page-articles__header-text">НОВОСТИ</span></h1>
+					<div class="b-sub-page-article">
+						<div class="b-sub-page-article-content">
+							{% block new %}{% endblock new %}
+							{% block comments %}{% endblock comments %}
+							{% block earlier %}{% endblock earlier %}
+						</div>
+						{% block news_main %}{% endblock news_main %}
+					</div>
+					{% block news %}{% endblock news %}
+				</div>
+				<div class="b-button">ЗАГРУЗИТЬ ЕЩЁ</div>
+				{% block random_authors %}{% endblock random_authors %}
+			</div>
+		</div>
+	</div>
+	<div class="b-footer">
+		<div class="b-footer__wrapper">
+			<div class="b-to-top"></div>
+			<div class="b-footer-articles">
+				{% block best-week-articles %}{% endblock best-week-articles %}
+				{% block random-author %}{% endblock random-author %}
+				{% block last-comments %}{% endblock last-comments %}
+			</div>
+			{% include "block_footer.html" %}
+		</div>
+	</div>
+	{% block comment_add %}{% endblock comment_add %}
+</body>
+</body>
+</html>

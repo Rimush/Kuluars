@@ -1,0 +1,47 @@
+{% load static %}
+<html>
+<head>
+	{% include "block_head.html" %}
+</head>
+<body>
+	<div class="b-main-wrapper">
+		{% include "block_logo.html" %}
+		{% include "block_menu_top.html" %}
+		<div class="b-content">
+			<div class="b-content-full">
+				<div class="b-sub-page-articles">
+					<h1 class="b-sub-page-articles__header" data-word="{{ tag_current.name|slice:'1'|lower }}">
+						<span class="b-sub-page-articles__header-text">
+							{% if tag_current == Null %}
+								Теги
+							{% else %}
+								Тег: {{ tag_current }}
+							{% endif %}
+						</span>
+					</h1>
+					{% block abc %}{% endblock abc %}
+					<div class="b-sub-page-article">
+						<div class="b-articles">
+							{% block tags %}{% endblock tags %}
+							{% block articles %}{% endblock articles %}
+						</div>
+					</div>
+				</div>
+				{% block random_authors %}{% endblock random_authors %}
+			</div>
+		</div>
+	</div>
+	<div class="b-footer">
+		<div class="b-footer__wrapper">
+			<div class="b-to-top"></div>
+			<div class="b-footer-articles">
+				{% block best-week-articles %}{% endblock best-week-articles %}
+				{% block random-author %}{% endblock random-author %}
+				{% block last-comments %}{% endblock last-comments %}
+			</div>
+			{% include "block_footer.html" %}
+		</div>
+	</div>
+	{% block comment_add %}{% endblock comment_add %}
+</body>
+</html>

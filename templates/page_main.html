@@ -1,0 +1,75 @@
+{% load static %}
+<html>
+<head>
+	{% include "block_head.html" %}
+</head>
+<body>
+	<div class="anchor-top" id="anchor-top"></div>
+	<div class="b-main-wrapper">
+		{% include "block_logo.html" %}
+		{% include "block_menu_top.html" %}
+
+		<div class="b-content">
+			<div class="b-content-left">
+				<div class="b-main-page-articles">
+					<h1 class="b-main-page-articles__header"><span class="b-main-page-articles__header-text">СТАТЬИ</span></h1>
+					{% block main-page-articles %}{% endblock main-page-articles %}
+				</div>
+				<div class="b-articles b-articles--border b-articles--radius-10 b-articles--indent-bottom-45">
+					<h1 class="b-articles__header"><span class="b-articles__header-text">НОВОСТИ</span></h1>
+					{% block main-page-news %}{% endblock main-page-news %}
+				</div>
+			</div>
+			<div class="b-content-right">
+				<div class="b-block">
+					<h1 class="b-block__header"><span class="b-block__header-text">ПОРТФОЛИО</span></h1>
+				</div>
+				
+				<div class="b-block">
+				    <input id="about" class="b-block__accordion-input" type="checkbox" />
+					<label for="about" class="b-block__accordion-label"></label>
+					<h1 class="b-block__header">О нас</h1>
+					<div class="b-block__content"><div class="space"></div></div>
+					<h2 class="b-block__text">Текст</h2>
+				</div>
+				
+				<div class="b-block">
+				    <input id="block1" class="b-block__accordion-input" type="checkbox" checked />
+					<label for="block1" class="b-block__accordion-label"></label>
+					<h1 class="b-block__header">Блок</h1>
+					<div class="b-block__content"><div class="space"></div></div>
+					<h2 class="b-block__text">Текст</h2>
+				</div>
+				
+				<div class="b-block">
+				    <input id="block2" class="b-block__accordion-input" type="checkbox" checked />
+					<label for="block2" class="b-block__accordion-label"></label>
+					<h1 class="b-block__header">Блок</h1>
+					<div class="b-block__content"><div class="space"></div></div>
+					<h2 class="b-block__text">Текст</h2>
+				</div>
+				
+				<div class="b-block">
+				    <input id="block3" class="b-block__accordion-input" type="checkbox" checked />
+					<label for="block3" class="b-block__accordion-label"></label>
+					<h1 class="b-block__header">Блок</h1>
+					<div class="b-block__array"></div>
+					<div class="b-block__content"><div class="space"></div></div>
+					<h2 class="b-block__text">Текст</h2>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="b-footer">
+		<div class="b-footer__wrapper">
+			<div class="b-to-top"></div>
+			<div class="b-footer-articles">
+				{% block best-week-articles %}{% endblock best-week-articles %}
+				{% block random-author %}{% endblock random-author %}
+				{% block last-comments %}{% endblock last-comments %}
+			</div>
+			{% include "block_footer.html" %}
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+		<div class="b-menu">
+			<ul class="b-menu-items">
+				<li class="b-menu-item"><a href="{% url 'articles:articles' %}" class="b-menu-link">СТАТЬИ</a></li>
+				<li class="b-menu-item"><a href="{% url 'articles:news' %}" class="b-menu-link">НОВОСТИ</a></li>
+				<li class="b-menu-item"><a href="#" class="b-menu-link">ПОРТФОЛИО</a></li>
+				<li class="b-menu-item">
+					<div class="b-menu-search">
+						<form action="{% url 'articles:search' %}" method="get">
+						  <input class="b-menu-search-input b-menu-search-input--hide" name="q" type="text" placeholder="Поиск...">
+						</form>
+						<div class="b-menu-search-button"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
