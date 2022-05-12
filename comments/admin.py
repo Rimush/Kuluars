@@ -2,6 +2,7 @@ from django.contrib import admin
 from .models import Comment
 
 class CommentsAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['article', ]
     list_display = ('name', 'article', 'content', 'created')
     list_display_links = ('name', 'article', 'content', 'created', )
     search_fields = ('content', )

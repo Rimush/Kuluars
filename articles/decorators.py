@@ -2,7 +2,6 @@ from functools import wraps
 from django.db.models import F
 from django.db import transaction
 
-
 def counted(f):
     @wraps(f)
     def decorator(request, *args, **kwargs):

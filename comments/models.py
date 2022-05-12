@@ -15,4 +15,4 @@ class Comment(models.Model):
         ordering = ('created',)  
           
     def __str__(self):  
-        return 'Comment by {} on {}'.format(self.name, self.article)
+        return 'Комментарий {} на {}'.format(self.name, self.article)

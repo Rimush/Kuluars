@@ -6,20 +6,16 @@ class AuthorAdmin(admin.ModelAdmin):
     search_fields = ['surname', 'name', 'middlename', ]  
     
 class ArticlesAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['author', 'earlier', ]
+    autocomplete_fields = ['author', 'earlier', 'journal', ]
     list_display = ('title', 'author', 'category', 'created')
     list_display_links = ('title',)
     search_fields = ('title', )
-    '''formfield_overrides = {
-        models.TextField: {'widget': CKEditorWidget}
-    }'''
     
 class JournalAdmin(admin.ModelAdmin):
-    ordering = ['name', ]
-    search_fields = ['name', ]  
+    ordering = ['title', ]
+    search_fields = ['title', ]  
     
 # Register your models here.
-#admin.site.register(Сategory)
 admin.site.register(Author, AuthorAdmin)
 admin.site.register(Article, ArticlesAdmin)
 admin.site.register(Journal, JournalAdmin)

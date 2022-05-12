@@ -7,7 +7,6 @@ from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from taggit.models import Tag
 from django.core import serializers
-
 from django.http import JsonResponse
 from .serializers import articles_serializer, tags_serializer
  
