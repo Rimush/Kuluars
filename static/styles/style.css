@@ -311,6 +311,42 @@ p {
 	top: 5px;
 }
 
+.b-sub-page-articles__header-double-text {
+	font-family: Verdana;
+	font-size: 20px;
+	font-weight: 900;
+	color: #5e5f62;
+	position: relative;
+}
+.b-sub-page-articles__header-double-text:before {
+	content: "";
+	display: block;
+	width: 15px;
+	height: 15px;
+	background-color: #db3c2e;
+	position: absolute;
+	left: -25px;
+	top: 5px;
+}
+.b-sub-page-articles__header-double-text:after {
+	content: "";
+	display: block;
+	width: 15px;
+	height: 15px;
+	background-color: #db3c2e;
+	position: absolute;
+	right: -25px;
+	top: 5px;
+}
+
+.b-sub-page-articles__header-double-subtext {
+	font-family: Verdana;
+	font-size: 16px;
+	font-weight: 900;
+	color: #5e5f62;
+	position: relative;
+}
+
 .b-sub-page-article {
 	width: 100%;
 	margin: 0 0 3px 0;

@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Article, Author
+from .models import Article, Author, Journal
 from comments.models import Comment
 from comments.forms import CommentForm
 from django.utils import timezone
@@ -275,6 +275,58 @@ def new(request, slug):
     context.update({'last_comments': last_comments()})
 
     return render(request, 'page_news__new.html', context)
+    
+def journals(request):
+    journal = Journal.objects.order_by('-index')
+    
+    if len(journal) == 0:
+        journal = None
+    else:
+        journal = journal[0]
+        articles = Article.objects.filter(journal=journal.id).order_by('-created')
+        article = articles[0]
+        
+    # Статьи ранее
+    deep = 3
+    earlier = []
+    earlier_list = [article]
+    while deep != 0:
+        deep -= 1
+        earlier_tmp = []
+        for item in earlier_list:
+            if item.earlier != None:
+                earlier.append(item.earlier)
+                earlier_tmp.append(item.earlier)
+        earlier_list = earlier_tmp
+    if earlier == []: earlier = [None]
+    
+    # Список активных комментариев к этой записи  
+    comments = article.comments.filter(active=True)  
+    new_comment = None  
+    if request.method == 'POST':  
+        comment_form = CommentForm(data=request.POST)  
+        if comment_form.is_valid():  
+            new_comment = comment_form.save(commit=False)  
+            new_comment.article = article
+            #new_comment.ip = request.META.get('REMOTE_ADDR')
+            new_comment.save() 
+    else:  
+        comment_form = CommentForm()  
+        
+    context = {}
+    context.update({'article': article})
+    context.update({'earlier': earlier})
+    context.update({'articles': articles})
+    context.update({'journal': journal})
+    context.update({'best_week_articles': best_week_articles()})
+    context.update({'random_author': random_author()})
+    context.update({'random_authors': random_authors()})
+    context.update({'comments': comments})
+    context.update({'new_comment': new_comment})
+    context.update({'comment_form': comment_form})  
+    context.update({'last_comments': last_comments()})
+    
+    return render(request, 'page_journals__list.html', context)
     
 def tags(request):
     abc = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'];

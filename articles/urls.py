@@ -16,6 +16,7 @@ urlpatterns = [
     path('search/', views.search, name='search'),
     path('tags/', views.tags, name='tags'),
     path('tag/<slug:slug>/', views.tag, name='tag'),
+    path('journals/', views.journals, name='journals'),
     path('api/articles/', views.api_articles),
     path('api/tags/', views.api_tags),
 ]

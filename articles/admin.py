@@ -12,7 +12,7 @@ class ArticlesAdmin(admin.ModelAdmin):
     search_fields = ('title', )
     
 class JournalAdmin(admin.ModelAdmin):
-    ordering = ['title', ]
+    ordering = ['-index', ]
     search_fields = ['title', ]  
     
 # Register your models here.
