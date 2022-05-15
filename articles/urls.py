@@ -17,6 +17,9 @@ urlpatterns = [
     path('tags/', views.tags, name='tags'),
     path('tag/<slug:slug>/', views.tag, name='tag'),
     path('journals/', views.journals, name='journals'),
+    path('journal/<slug:journal_slug>/', views.journal, name='journal'),
+    path('journal/<slug:journal_slug>/<slug:article_slug>/', views.journal, name='journal_article'),
+    path('ajax/journals/<int:year>', views.ajax_journals, name='ajax_journals'),
     path('api/articles/', views.api_articles),
     path('api/tags/', views.api_tags),
 ]

@@ -32,25 +32,27 @@
 {% endblock article %}
 
 {% block comments %}
-	<a class="b-sub-page-article-content__button" data-fancybox data-src="#comment-add" href="javascript:;">КОММЕНТИРОВАТЬ</a>
-	{% for comment in comments %}  
-		{% with comments.count as total_comments %}  
-			{% if forloop.counter == 1 %}
-				<h2 class="comment-header">  
-					{{ total_comments }} Коментари{{ total_comments|rupluralize:"й,я,ев" }}: 
-				</h2>  
-			{% endif %}
-		{% endwith %}
-		<div class="comment" id="commnet-{{ comment.id }}">  
-			<div class="comment__number">{{ forloop.counter }}</div><div class="comment__name">{{ comment.name }}</div><div class="comment__created">({{ comment.created|date:"d.m.Y H:i" }})</div> 
-			<div class="clearfix"></div>
-			<div class="comment__content">{{ comment.content|linebreaks }} </div>
-		</div>  
-	{% empty %}  
-		<h2 class="comment-header">  
-			Еще нет комментариев.
-		</h2>
-	{% endfor %}
+	{% if article != None %}
+		<a class="b-sub-page-article-content__button" data-fancybox data-src="#comment-add" href="javascript:;">КОММЕНТИРОВАТЬ</a>
+		{% for comment in comments %}  
+			{% with comments.count as total_comments %}  
+				{% if forloop.counter == 1 %}
+					<h2 class="comment-header">  
+						{{ total_comments }} Коментари{{ total_comments|rupluralize:"й,я,ев" }}: 
+					</h2>  
+				{% endif %}
+			{% endwith %}
+			<div class="comment" id="commnet-{{ comment.id }}">  
+				<div class="comment__number">{{ forloop.counter }}</div><div class="comment__name">{{ comment.name }}</div><div class="comment__created">({{ comment.created|date:"d.m.Y H:i" }})</div> 
+				<div class="clearfix"></div>
+				<div class="comment__content">{{ comment.content|linebreaks }} </div>
+			</div>  
+		{% empty %}  
+			<h2 class="comment-header">  
+				Еще нет комментариев.
+			</h2>
+		{% endfor %}
+	{% endif %}
 {% endblock comments %}
 
 {% block comment_add %}
@@ -86,7 +88,7 @@
 	{% endif %}
 {% endblock earlier %}
 
-{% block journal_current %}
+{% block journal %}
 	{% if journal != None %} 
 		<div class="b-sub-page-journal">
 			<div class="b-sub-page-journal__number">№{{ journal.number }} ({{ journal.index }})</div>
@@ -97,13 +99,28 @@
 			<a class="b-sub-page-journal__button" target="_blank" href="{{ journal.pdf.url }}">СКАЧАТЬ PDF</a>
 			<div class="b-sub-page-journal__content">Содержание</div>
 			<ul class="b-sub-page-journal__articles-list">
-				{% for article in articles %}
-					<li class="b-sub-page-journal__articles-item"><a href="{% url 'articles:article' article.slug %}" class="b-sub-page-journal__articles-link">{{ article.title }}</a></li>
+				{% for item in articles %}
+					<li class="b-sub-page-journal__articles-item{% if item == article %} b-sub-page-journal__articles-item--active{% endif %}"><a href="{% url 'articles:journal_article' journal.slug item.slug %}" class="b-sub-page-journal__articles-link{% if item == article %} b-sub-page-journal__articles-link--active{% endif %}">{{ item.title }}</a></li>
 				{% endfor %}
 			</ul>
 		</div>
 	{% endif %}
-{% endblock journal_current %}
+{% endblock journal %}
+
+{% block journals %}
+	<h2 class="b-sub-page-journals__year">{{ journal.year }}</h2>
+	<ul class="b-sub-page-journals__list">
+		{% for item in journals %}
+			<li class="b-sub-page-journals__item">
+				<a href="{% url 'articles:journal' item.slug %}" class="b-sub-page-journals__link">
+					<img src="{{ journal.image.url }}" alt="{{ journal.title }}" class="b-sub-page-journals__image{% if item == journal %} b-sub-page-journals__image--active{% endif %}">
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	<a class="b-sub-page-journals__button b-sub-page-journals__button--left">ПРЕДЫДУЩИЙ ГОД</a>
+	<a class="b-sub-page-journals__button b-sub-page-journals__button--right">СЛЕДУЮЩИЙ ГОД</a>
+{% endblock journals %}
 
 {% block best-week-articles %}
 	<div class="b-footer-week">

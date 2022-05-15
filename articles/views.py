@@ -9,6 +9,7 @@ from taggit.models import Tag
 from django.core import serializers
 from django.http import JsonResponse
 from .serializers import articles_serializer, tags_serializer
+from datetime import datetime
  
 def api_articles(request):
     if request.method == 'GET':
@@ -277,47 +278,136 @@ def new(request, slug):
     return render(request, 'page_news__new.html', context)
     
 def journals(request):
-    journal = Journal.objects.order_by('-index')
+    journals = Journal.objects.filter(year=datetime.now().year).order_by('-index')
     
-    if len(journal) == 0:
+    if len(journals) == 0:
+        journals = None
         journal = None
+        articles = None
+        article = None
+        earlier = None
+        comments = None
+        new_comment = None
+        comment_form = None         
     else:
-        journal = journal[0]
+        journal = journals[0]
         articles = Article.objects.filter(journal=journal.id).order_by('-created')
-        article = articles[0]
+        if len(articles) == 0:
+            articles = None
+            article = None
+            earlier = None
+            comments = None
+            new_comment = None 
+            comment_form = None 
+        else:
+            article = articles[0]
         
-    # Статьи ранее
-    deep = 3
-    earlier = []
-    earlier_list = [article]
-    while deep != 0:
-        deep -= 1
-        earlier_tmp = []
-        for item in earlier_list:
-            if item.earlier != None:
-                earlier.append(item.earlier)
-                earlier_tmp.append(item.earlier)
-        earlier_list = earlier_tmp
-    if earlier == []: earlier = [None]
+            # Статьи ранее
+            deep = 3
+            earlier = []
+            earlier_list = [article]
+            while deep != 0:
+                deep -= 1
+                earlier_tmp = []
+                for item in earlier_list:
+                    if item.earlier != None:
+                        earlier.append(item.earlier)
+                        earlier_tmp.append(item.earlier)
+                earlier_list = earlier_tmp
+            if earlier == []: earlier = [None]
     
-    # Список активных комментариев к этой записи  
-    comments = article.comments.filter(active=True)  
-    new_comment = None  
-    if request.method == 'POST':  
-        comment_form = CommentForm(data=request.POST)  
-        if comment_form.is_valid():  
-            new_comment = comment_form.save(commit=False)  
-            new_comment.article = article
-            #new_comment.ip = request.META.get('REMOTE_ADDR')
-            new_comment.save() 
-    else:  
-        comment_form = CommentForm()  
-        
+            # Список активных комментариев к этой записи  
+            comments = article.comments.filter(active=True)  
+            new_comment = None  
+            if request.method == 'POST':  
+                comment_form = CommentForm(data=request.POST)  
+                if comment_form.is_valid():  
+                    new_comment = comment_form.save(commit=False)  
+                    new_comment.article = article
+                    #new_comment.ip = request.META.get('REMOTE_ADDR')
+                    new_comment.save() 
+            else:  
+                comment_form = CommentForm()  
+                
     context = {}
     context.update({'article': article})
     context.update({'earlier': earlier})
     context.update({'articles': articles})
     context.update({'journal': journal})
+    context.update({'journals': journals})
+    context.update({'best_week_articles': best_week_articles()})
+    context.update({'random_author': random_author()})
+    context.update({'random_authors': random_authors()})
+    context.update({'comments': comments})
+    context.update({'new_comment': new_comment})
+    context.update({'comment_form': comment_form})  
+    context.update({'last_comments': last_comments()})
+    
+    return render(request, 'page_journals__list.html', context)
+    
+def journal(request, journal_slug, article_slug=None):
+    journals = Journal.objects.filter(year=datetime.now().year).order_by('-index')
+
+    journal = Journal.objects.filter(slug=journal_slug)
+    if len(journal) == 0:
+        journals = None
+        journal = None
+        articles = None
+        article = None
+        earlier = None
+        comments = None
+        new_comment = None
+        comment_form = None
+    else:
+        journal = journal[0]
+        articles = Article.objects.filter(journal=journal.id).order_by('-created')
+        
+        if len(articles) == 0:
+            articles = None
+            article = None
+            earlier = None
+            comments = None
+            new_comment = None 
+            comment_form = None 
+        else:
+            if article_slug == None:
+                article = articles[0]
+            else:
+                article = get_object_or_404(Article, slug=article_slug)
+        
+            # Статьи ранее
+            deep = 3
+            earlier = []
+            earlier_list = [article]
+            while deep != 0:
+                deep -= 1
+                earlier_tmp = []
+                for item in earlier_list:
+                    if item.earlier != None:
+                        earlier.append(item.earlier)
+                        earlier_tmp.append(item.earlier)
+                earlier_list = earlier_tmp
+            if earlier == []: earlier = [None]
+    
+            # Список активных комментариев к этой записи  
+            comments = article.comments.filter(active=True)  
+            new_comment = None  
+            if request.method == 'POST':  
+                comment_form = CommentForm(data=request.POST)  
+                if comment_form.is_valid():  
+                    new_comment = comment_form.save(commit=False)  
+                    new_comment.article = article
+                    #new_comment.ip = request.META.get('REMOTE_ADDR')
+                    new_comment.save() 
+            else:  
+                comment_form = CommentForm()  
+                
+    context = {}
+    context.update({'article': article})
+    context.update({'earlier': earlier})
+    context.update({'articles': articles})
+    context.update({'journal': journal})
+    context.update({'journals': journals})
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
@@ -400,6 +490,12 @@ def search(request):
     context.update({'last_comments': last_comments()})
     
     return render(request, 'page_search_result.html', context)
+    
+def ajax_journals(request, year):
+    journals = Journal.objects.filter(year=year).order_by('-index')
+    context = {}
+    context.update({'journals': journals})
+    return render(request, 'ajax_journals.html', context)
     
 def page_not_found(request, exception):
     return render(request, 'page_404.html', status=404)

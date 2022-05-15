@@ -48,9 +48,10 @@ class Journal(models.Model):
         h.update(s.encode('utf-8'))
         h = h.hexdigest()
         return F"pdf/{slugify(self.title, True)}_{h}{splitext(filename)[1]}"
-        
+
     number = models.PositiveIntegerField(verbose_name='Номер журнала', default=0)
     index = models.PositiveIntegerField(verbose_name='Порядковый номер', default=0)
+    year = models.PositiveIntegerField(verbose_name='Год', default=datetime.now().year)
     title = models.CharField(verbose_name='Заголовок', max_length=256)
     slug = models.SlugField(verbose_name='Алиас', blank=True, max_length=100)
     image = models.ImageField(verbose_name='Изображение', blank=True, upload_to='pdf')
