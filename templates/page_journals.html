@@ -28,9 +28,12 @@
 					{% block articles %}{% endblock articles %}
 				</div>
 				<div class="b-sub-page-articles b-sub-page-articles--right">
-					{% block journal_current %}{% endblock journal_current %}
+					{% block journal %}{% endblock journal %}
 				</div>
-				{% block random_authors %}{% endblock random_authors %}
+				<div class="b-sub-page-journals">
+					<h1 class="b-sub-page-journals__header"><span class="b-sub-page-journals__header-text">АРХИВ НОМЕРОВ</span></h1>
+					{% block journals %}{% endblock journals %}
+				</div>	
 			</div>
 		</div>
 	</div>
