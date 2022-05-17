@@ -100,7 +100,7 @@
 			<div class="b-sub-page-journal__content">Содержание</div>
 			<ul class="b-sub-page-journal__articles-list">
 				{% for item in articles %}
-					<li class="b-sub-page-journal__articles-item{% if item == article %} b-sub-page-journal__articles-item--active{% endif %}"><a href="{% url 'articles:journal_article' journal.slug item.slug %}" class="b-sub-page-journal__articles-link{% if item == article %} b-sub-page-journal__articles-link--active{% endif %}">{{ item.title }}</a></li>
+					<li class="b-sub-page-journal__articles-item{% if item == article %} b-sub-page-journal__articles-item--active{% endif %}"><a href="{% url 'articles:journal_article' journal.year journal.slug item.slug %}" class="b-sub-page-journal__articles-link{% if item == article %} b-sub-page-journal__articles-link--active{% endif %}">{{ item.title }}</a></li>
 				{% endfor %}
 			</ul>
 		</div>
@@ -112,8 +112,8 @@
 	<ul class="b-sub-page-journals__list">
 		{% for item in journals %}
 			<li class="b-sub-page-journals__item">
-				<a href="{% url 'articles:journal' item.slug %}" class="b-sub-page-journals__link">
-					<img src="{{ journal.image.url }}" alt="{{ journal.title }}" class="b-sub-page-journals__image{% if item == journal %} b-sub-page-journals__image--active{% endif %}">
+				<a href="{% url 'articles:journal' item.year item.slug %}" class="b-sub-page-journals__link">
+					<img src="{{ item.image.url }}" alt="{{ item.title }}" class="b-sub-page-journals__image{% if item == journal %} b-sub-page-journals__image--active{% endif %}">
 				</a>
 			</li>
 		{% endfor %}
@@ -191,3 +191,64 @@
 		</div>
 	</div>
 {% endblock random_authors %}
+
+{% block scripts %}
+	<script>
+		function check_year() {
+			year = Number($(".b-sub-page-journals__year").html())
+			$.ajax({
+				url: "/ajax/check-year/" + (year - 1),
+				context: document.body,
+				success: function(html){
+					if (html == 'True') {
+						$(".b-sub-page-journals__button.b-sub-page-journals__button--left").removeClass("b-sub-page-journals__button--disable");
+					} else {
+						$(".b-sub-page-journals__button.b-sub-page-journals__button--left").addClass("b-sub-page-journals__button--disable");
+					}
+				}
+			});    
+			$.ajax({
+				url: "/ajax/check-year/" + (year + 1),
+				context: document.body,
+				success: function(html){
+					if (html == 'True') {
+						$(".b-sub-page-journals__button.b-sub-page-journals__button--right").removeClass("b-sub-page-journals__button--disable")
+					} else {
+						$(".b-sub-page-journals__button.b-sub-page-journals__button--right").addClass("b-sub-page-journals__button--disable")
+					}
+				}
+			});  
+		}
+	
+		$(".b-sub-page-journals__button.b-sub-page-journals__button--left").click(function() {
+			if (!$(".b-sub-page-journals__button.b-sub-page-journals__button--left").hasClass("b-sub-page-journals__button--disable")) {
+				year = Number($(".b-sub-page-journals__year").html()) - 1
+				$.ajax({
+					url: "/ajax/journals/" + year,
+					context: document.body,
+					success: function(html){
+						$(".b-sub-page-journals__list").html(html)
+						$(".b-sub-page-journals__year").html(year)
+						check_year()
+					}
+				})
+			}
+		})
+		
+		$(".b-sub-page-journals__button.b-sub-page-journals__button--right").click(function() {
+			if (!$(".b-sub-page-journals__button.b-sub-page-journals__button--right").hasClass("b-sub-page-journals__button--disable")) {
+				year = Number($(".b-sub-page-journals__year").html()) + 1
+				$.ajax({
+					url: "/ajax/journals/" + year,
+					context: document.body,
+					success: function(html){
+						$(".b-sub-page-journals__list").html(html)
+						$(".b-sub-page-journals__year").html(year)
+						check_year()
+					}
+				});   
+			}
+		})
+		check_year()
+	</script>
+{% endblock scripts %}

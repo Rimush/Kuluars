@@ -129,6 +129,10 @@ p {
 	color: #ffffff;
 	transition: color 0.5s;
 	cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .b-menu-search-button:after {
 	content: "\f002";
@@ -460,6 +464,10 @@ p {
     border-radius: 2px;
     transition: background-color 0.5s, color 0.5s;
     cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .b-sub-page-journal__button:hover {
 	background-color: #fff;
@@ -662,6 +670,7 @@ p {
     overflow: hidden;
     border: 3px solid #ece9e8;
     box-sizing: border-box;
+	transition: height 500ms ease;
 }
 .b-sub-page-journals__header {
 	width: 100%;
@@ -761,6 +770,10 @@ p {
 	border: 2px solid #ffffff;
 	transition: background-color 0.5s, color 0.5s;
 	cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .b-sub-page-journals__button:hover {
 	background-color: #ffffff;
@@ -773,6 +786,14 @@ p {
 .b-sub-page-journals__button--right {
 	float: right;
 	margin-right: 20px;
+}
+.b-sub-page-journals__button--disable {
+	background-color: #c9c9c9;
+	cursor: default;
+}
+.b-sub-page-journals__button--disable:hover {
+	background-color: #c9c9c9;
+	color: #ffffff;
 }
 
 .b-sub-page-tag-cloud {
@@ -1045,6 +1066,10 @@ p {
 	position: relative;
 	transition: background-color 0.5s, color 0.5s;
 	cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .b-articles_search-button:hover {
 	background-color: #fff;
@@ -1626,10 +1651,22 @@ p {
 	border: 2px solid #ffffff;
 	transition: background-color 0.5s, color 0.5s;
 	cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .b-button:hover {
 	background-color: #ffffff;
 	color: #f66e3c;
+}
+.b-button--disable {
+	background-color: #c9c9c9;
+	cursor: default;
+}
+.b-button--disable:hover {
+	background-color: #c9c9c9;
+	color: #ffffff;
 }
 
 .b-to-top {
@@ -2278,6 +2315,10 @@ p {
 	transition: background-color 0.5s, color 0.5s;
 	background-color: #f66e3c;
 	cursor: pointer;
+    -ms-user-select: none;
+	-moz-user-select: none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
 }
 .modal form button:hover {
 	background-color: #ffffff;

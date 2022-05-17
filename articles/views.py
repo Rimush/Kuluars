@@ -10,6 +10,10 @@ from django.core import serializers
 from django.http import JsonResponse
 from .serializers import articles_serializer, tags_serializer
 from datetime import datetime
+import json
+
+CONST_ARTICLES = 4
+CONST_NEWS = 9
  
 def api_articles(request):
     if request.method == 'GET':
@@ -56,12 +60,10 @@ def random_authors():
         return authors[:4]
     
 def more_articles(category, article=None):
-    print(article)
     if article == None:
         return None
     else:
-        articles = Article.objects.filter(category=category).filter(~Q(id=article.id)).order_by('-created')
-        return articles
+        return Article.objects.filter(category=category).filter(~Q(id=article.id)).order_by('-created')
 
 # лучшии статьи за неделю  
 def best_week_articles():
@@ -82,6 +84,7 @@ def index(request):
     return render(request, 'page_main__index.html', context)
 
 def articles(request):
+    global CONST_ARTICLES
     article = Article.objects.filter(category='article').order_by('-created')
     if len(article) == 0:
         article = None
@@ -105,7 +108,7 @@ def articles(request):
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
-    context.update({'more_articles': more_articles('article', article)})
+    context.update({'more_articles': more_articles('article', article)[0:CONST_ARTICLES]})
     context.update({'last_comments': last_comments()})
     
     return render(request, 'page_articles__list.html', context)
@@ -163,12 +166,13 @@ def article(request, slug):
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
-    context.update({'more_articles': more_articles('article', article)})
+    context.update({'more_articles': more_articles('article', article)[0:CONST_ARTICLES]})
     context.update({'last_comments': last_comments()})
     
     return render(request, 'page_articles__article.html', context)
    
 def news(request):
+    global CONST_NEWS
     new = Article.objects.filter(category='news').order_by('-created')
     if len(new) == 0:
         new = None
@@ -221,13 +225,13 @@ def news(request):
     context.update({'comment_form': comment_form})
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
-    context.update({'random_authors': random_authors()})
-    context.update({'more_news': more_articles('news', new)})
+    context.update({'more_news': more_articles('news', new)[0:CONST_NEWS]})
     context.update({'last_comments': last_comments()})
     
     return render(request, 'page_news__list.html', context)
    
 def new(request, slug):
+    global CONST_NEWS
     new = get_object_or_404(Article, slug=slug)
     important = Article.objects.filter(important=True, category='news').filter(~Q(id=new.id)).order_by('-created')[:3]
     
@@ -271,8 +275,7 @@ def new(request, slug):
     context.update({'comment_form': comment_form})
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
-    context.update({'random_authors': random_authors()})
-    context.update({'more_news': more_articles('news', new.id)})
+    context.update({'more_news': more_articles('news', new)[0:CONST_NEWS]})
     context.update({'last_comments': last_comments()})
 
     return render(request, 'page_news__new.html', context)
@@ -345,8 +348,8 @@ def journals(request):
     
     return render(request, 'page_journals__list.html', context)
     
-def journal(request, journal_slug, article_slug=None):
-    journals = Journal.objects.filter(year=datetime.now().year).order_by('-index')
+def journal(request, year, journal_slug, article_slug=None):
+    journals = Journal.objects.filter(year=year).order_by('-index')
 
     journal = Journal.objects.filter(slug=journal_slug)
     if len(journal) == 0:
@@ -496,6 +499,38 @@ def ajax_journals(request, year):
     context = {}
     context.update({'journals': journals})
     return render(request, 'ajax_journals.html', context)
+    
+def ajax_check_year(request, year):
+    journals = Journal.objects.filter(year=year).order_by('-index')
+    if len(journals) > 0:
+        year = True
+    else:
+        year = False
+        
+    context = {}
+    context.update({'year': year})
+    return render(request, 'ajax_check_year.html', context)
+    
+def ajax_load_category(request, category, article_id, start):
+    global CONST_ARTICLES
+    global CONST_NEWS
+    
+    articles = Article.objects.filter(category=category).filter(~Q(id=article_id)).order_by('-created')
+    context = {}
+    
+    if category == 'article':
+        context.update({'more_articles': articles[start:start + CONST_ARTICLES]})
+        return render(request, 'ajax_load_articles.html', context)
+        
+    if category == 'news':
+        context.update({'more_news': articles[start:start + CONST_NEWS]})
+        return render(request, 'ajax_load_news.html', context)
+    
+def ajax_articles_count(request, category):
+    count = len(Article.objects.filter(category=category).order_by('-created'))
+    context = {}
+    context.update({'count': count})
+    return render(request, 'ajax_articles_count.html', context)
     
 def page_not_found(request, exception):
     return render(request, 'page_404.html', status=404)

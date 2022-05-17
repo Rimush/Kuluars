@@ -1,0 +1,13 @@
+{% load pluralize %}
+{% for article in more_articles %}
+	<a href="{% url 'articles:article' article.slug %}" class="b-article b-article--i2">
+		<div class="b-article__image-wrap-300"><img src="{{ article.image.url }}" class="b-article__image" alt="{{ article.title }}"></div>
+		<h2 class="b-article__header">{{ article.title }}</h2>
+		<div class="b-article__info">
+			<div class="b-article__date">{{ article.created|date:"d E H:i" }}</div>
+			<div class="b-article__views">{{ article.views }}</div>
+			<div class="b-article__author">Автор: {{ article.author.name }} {{ article.author.surname }}</div>
+		</div>
+		<div class="b-article__text">{{ article.fulltext|no_image|truncatewords_html:20|safe }}</div>
+	</a>
+{% endfor %}

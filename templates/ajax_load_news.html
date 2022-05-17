@@ -1,0 +1,15 @@
+{% load pluralize %}
+{% for new in more_news %}
+	<a href="{% url 'articles:new' new.slug %}" class="b-article b-article--i3">
+		<div class="b-article__image-wrap-200"><img src="{{ new.image.url }}" class="b-article__image" alt="{{ new.title }}"></div>
+		<h2 class="b-article__header">{{ new.title }}</h2>
+		<div class="b-article__info">
+			<div class="b-article__date">{{ new.created|date:"d E H:i" }}</div>
+			<div class="b-article__views">{{ new.views }}</div>
+			{% if new.author %}
+				<div class="b-article__author">Автор: {{ new.author.name }} {{ new.author.surname }}</div>
+			{% endif %}
+		</div>
+		<div class="b-article__text">{{ new.fulltext|no_image|truncatewords_html:20|safe }}</div>
+	</a>
+{% endfor %}

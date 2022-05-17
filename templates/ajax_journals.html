@@ -1,1 +1,7 @@
-{{ journals }}
+{% for item in journals %}
+	<li class="b-sub-page-journals__item">
+		<a href="{% url 'articles:journal' item.year item.slug %}" class="b-sub-page-journals__link">
+			<img src="{{ item.image.url }}" alt="{{ item.title }}" class="b-sub-page-journals__image{% if item == journal %} b-sub-page-journals__image--active{% endif %}">
+		</a>
+	</li>
+{% endfor %}

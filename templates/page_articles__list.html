@@ -127,3 +127,34 @@
 		</div>
 	</div>
 {% endblock random_authors %}
+
+{% block scripts %}
+	<script>
+		function check_count() {
+			$.ajax({
+				url: "/ajax/articles-count/article",
+				context: document.body,
+				success: function(html){
+					if (Number(html) == ($('.b-articles .b-article').length + 1)) {
+						$(".b-button.b-button--load").addClass("b-button--disable");
+					} else {
+						$(".b-button.b-button--load").removeClass("b-button--disable");
+					}
+				}
+			});    
+		}
+	
+		$(".b-button.b-button--load").click(function () {
+			start = $('.b-articles .b-article').length
+			$.ajax({
+				url: "/ajax/article/{{ article.id }}/" + start,
+				context: document.body,
+				success: function(html){
+					$(".b-articles").append(html)
+					check_count()
+				}
+			})
+		})
+		check_count()
+	</script>
+{% endblock scripts %}
