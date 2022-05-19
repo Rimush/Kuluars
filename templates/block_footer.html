@@ -1,4 +1,4 @@
-			<div class="b-footer-info">
+  			<div class="b-footer-info">
 				<div class="b-footer-menu">
 					<h1 class="b-footer-menu__header">МЕНЮ</h1>
 					
@@ -28,6 +28,58 @@
 				
 				<div class="b-footer-published">
 					<h1 class="b-footer-published__header">ПОИСК ПУБЛИКАЦИЙ ПО ДАТЕ</h1>
+					<div class="calendar">
+						<div class="calendar__header">
+
+							<select name="calendar__month" class="calendar__month">
+								{% for key, value in calendar_articles.months.items %}
+									<option value="{{ key }}"{% if key == calendar_articles.select_month %} selected=""{% endif %}>{{ value }}</option>
+								{% endfor %}
+							</select>
+
+							<select name="calendar__year" class="calendar__year">
+								{% for value in calendar_articles.years %}
+									<option value="{{ value }}"{% if value == calendar_articles.select_year %} selected=""{% endif %}>{{ value }}</option>
+								{% endfor %}
+							</select>
+
+						</div>
+						<div class="calendar__body">
+							<ul class="calendar__body-days">
+								<li class="calendar__body-days-item">ПН</li>
+								<li class="calendar__body-days-item">ВТ</li>
+								<li class="calendar__body-days-item">СР</li>
+								<li class="calendar__body-days-item">ЧТ</li>
+								<li class="calendar__body-days-item">ПТ</li>
+								<li class="calendar__body-days-item">СБ</li>
+								<li class="calendar__body-days-item">ВС</li>
+							</ul>
+							<ul class="calendar__body-dates">
+								{% for day in calendar_articles.days %}
+									{% if day.day != 0 %}
+										<li class='calendar__body-dates-item
+											{% if day.now == True %} calendar__body-dates-item--active{% endif %}
+											{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}
+										'>
+										{{ day.day }}
+										{% if day.count != 0 %}
+											<div class="calendar__body-dates-tooltip">
+												<div class="calendar__body-dates-tooltip-count">{{ day.count }}</div>
+												<div class="calendar__body-dates-tooltip-content">
+												{% for article in day.articles %}
+													<div>{{ article.title }}</div>
+												{% endfor %}
+												</div>
+											</div>
+										{% endif %}
+										</li>
+									{% else %}
+										<li class="calendar__body-dates-item"></li>
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
 				</div>
 				
 				<div class="b-footer-help">
@@ -52,3 +104,24 @@
 			<div class="b-footer-copyright">
 				<div class="b-footer-copyright-text">Студия политической рекламы: +7(3952) 651-900, irk-kuluary@yandex.ru</div>
 			</div>
+			
+	<script>
+
+			function check_date() {
+				$.ajax({
+					url: "/ajax/calendar-articles/01/" + $('.calendar__month').val() + '/' + $('.calendar__year').val(),
+					context: document.body,
+					success: function(html){
+						$(".calendar__body-dates").html(html)
+					}
+				});   
+			}
+			
+			$('.calendar__month').change(function () {
+				check_date()
+			})
+			
+			$('.calendar__year').change(function () {
+				check_date()
+			})
+	</script>

@@ -9,8 +9,12 @@ from taggit.models import Tag
 from django.core import serializers
 from django.http import JsonResponse
 from .serializers import articles_serializer, tags_serializer
+from calendar import monthrange
 from datetime import datetime
 import json
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncDay
 
 CONST_ARTICLES = 4
 CONST_NEWS = 9
@@ -26,6 +30,62 @@ def api_tags(request):
         tags = Tag.objects.all()
         serializer = tags_serializer(tags, many=True)
         return JsonResponse(serializer.data, safe=False)
+ 
+def calendar(day=None, month=None, year=None):
+    months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+    start_year = 2010
+    
+    if day == None:
+        day = datetime.now().day
+
+    if month == None:
+        month = datetime.now().month
+    print(month)
+    if year == None:
+        year = datetime.now().year
+        
+    number_days = monthrange(year, month)[1]
+    day_week = datetime(year, month, 1).isoweekday()
+    articles = Article.objects.filter(created__month=month).filter(created__year=year)
+    
+    current_day = 0
+    index = 0
+    days = {}
+    days.update({'current_day': str(datetime.now().day)})
+    days.update({'current_month': f'{datetime.now().month:02}'})
+    days.update({'current_year': str(datetime.now().year)})
+    
+    days.update({'select_month': f'{month:02}'})
+    days.update({'select_year': str(year)})
+    
+    days.update({'months': {}})
+    for i, m in enumerate(months): days['months'].update({f'{i+1:02}': m})
+    
+    days.update({'years': []})
+    while start_year <= int(datetime.now().strftime("%Y")):
+        days['years'].append(str(start_year))
+        start_year += 1
+    
+    days.update({'days': []})
+    while current_day < number_days:
+        index += 1
+        if index >= day_week:
+            current_day += 1
+        if datetime.now().strftime("%d.%m.%Y") == f'{current_day:02}.{month:02}.{year}':
+            now = True
+        else:
+            now = False
+            
+        days['days'].append({'day': current_day, 'now': now, 'count': len(articles.filter(created__day=current_day)), 'articles': articles.filter(created__day=current_day)})
+        
+    return days
+    
+    
+    '''articles = Article.objects.filter(created__month=month)
+    print(len(articles.filter(created__day=12)))
+    
+    groups = Article.objects.annotate(day=TruncMonth('created')).values('day').annotate(c=Count('id'))  
+    print(groups)'''
  
 # последние комментарии
 def last_comments():
@@ -74,12 +134,14 @@ def best_week_articles():
 def index(request):
     articles = Article.objects.filter(category='article').order_by('-created')
     news = Article.objects.filter(category='news').order_by('-created')
+    print(calendar())
     context = {}
     context.update({'articles': articles})
     context.update({'news': news})
     context.update({'best_week_articles': best_week_articles()})
     context.update({'random_author': random_author()})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_main__index.html', context)
 
@@ -110,6 +172,7 @@ def articles(request):
     context.update({'random_authors': random_authors()})
     context.update({'more_articles': more_articles('article', article)[0:CONST_ARTICLES]})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_articles__list.html', context)
     
@@ -168,6 +231,7 @@ def article(request, slug):
     context.update({'random_authors': random_authors()})
     context.update({'more_articles': more_articles('article', article)[0:CONST_ARTICLES]})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_articles__article.html', context)
    
@@ -227,6 +291,7 @@ def news(request):
     context.update({'random_author': random_author()})
     context.update({'more_news': more_articles('news', new)[0:CONST_NEWS]})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_news__list.html', context)
    
@@ -277,6 +342,7 @@ def new(request, slug):
     context.update({'random_author': random_author()})
     context.update({'more_news': more_articles('news', new)[0:CONST_NEWS]})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
 
     return render(request, 'page_news__new.html', context)
     
@@ -345,6 +411,7 @@ def journals(request):
     context.update({'new_comment': new_comment})
     context.update({'comment_form': comment_form})  
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_journals__list.html', context)
     
@@ -418,6 +485,7 @@ def journal(request, year, journal_slug, article_slug=None):
     context.update({'new_comment': new_comment})
     context.update({'comment_form': comment_form})  
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_journals__list.html', context)
     
@@ -431,6 +499,7 @@ def tags(request):
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_tags_all.html', context)
     
@@ -448,6 +517,7 @@ def tag(request, slug):
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_tags_item.html', context)
     
@@ -455,6 +525,7 @@ def authors(request):
     authors = Author.objects.order_by('surname', 'name', 'middlename')
     context = {}
     context.update({'authors': authors})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_authors.html', context)
     
@@ -470,6 +541,7 @@ def author(request, slug):
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_author__article.html', context)
 
@@ -491,6 +563,7 @@ def search(request):
     context.update({'random_author': random_author()})
     context.update({'random_authors': random_authors()})
     context.update({'last_comments': last_comments()})
+    context.update({'calendar_articles': calendar()})
     
     return render(request, 'page_search_result.html', context)
     
@@ -531,6 +604,11 @@ def ajax_articles_count(request, category):
     context = {}
     context.update({'count': count})
     return render(request, 'ajax_articles_count.html', context)
+    
+def ajax_calendar_articles(request, day, month, year):
+    context = {}
+    context.update({'calendar_articles': calendar(day, month, year)})
+    return render(request, 'ajax_calendar_articles.html', context)  
     
 def page_not_found(request, exception):
     return render(request, 'page_404.html', status=404)

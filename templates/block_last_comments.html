@@ -1,0 +1,20 @@
+	<div class="b-footer-comments">
+		<h1 class="b-footer-comments__header"><span class="b-footer-comments__header-text">ПОСЛЕДНИЕ КОММЕНТАРИИ </span></h1>
+		<ul class="b-footer-comments__articles">
+			{% for comment in last_comments %}
+				<li class="b-footer-comments__article">
+					{% if comment.article.category == 'article' %}
+						<a href="{% url 'articles:article' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
+					{% endif %}
+					{% if comment.article.category == 'news' %}
+						<a href="{% url 'articles:new' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
+					{% endif %}
+						{{ comment.article.title_short }}
+						<span class="b-footer-comments__comment" title="{{ comment.content }}"><span class="b-footer-comments__comment-text">{{ comment.content_short }}</span></span>
+					</a>
+				</li>
+			{% empty %}
+				<li class="b-footer-comments__article"></li>
+			{% endfor %}		
+		</ul>
+	</div>

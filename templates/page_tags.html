@@ -35,9 +35,9 @@
 		<div class="b-footer__wrapper">
 			<div class="b-to-top"></div>
 			<div class="b-footer-articles">
-				{% block best-week-articles %}{% endblock best-week-articles %}
-				{% block random-author %}{% endblock random-author %}
-				{% block last-comments %}{% endblock last-comments %}
+				{% include "block_best_week_articles.html" %}
+				{% include "block_random_author.html" %}
+				{% include "block_last_comments.html" %}
 			</div>
 			{% include "block_footer.html" %}
 		</div>

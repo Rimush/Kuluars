@@ -23,6 +23,7 @@ urlpatterns = [
     path('ajax/check-year/<int:year>', views.ajax_check_year, name='ajax_check_year'),
     path('ajax/<str:category>/<int:article_id>/<int:start>', views.ajax_load_category, name='ajax_load_category'),
     path('ajax/articles-count/<str:category>', views.ajax_articles_count, name='ajax_articles_count'),
+    path('ajax/calendar-articles/<int:day>/<int:month>/<int:year>', views.ajax_calendar_articles, name='ajax_calendar_articles'),
     path('api/articles/', views.api_articles),
     path('api/tags/', views.api_tags),
 ]

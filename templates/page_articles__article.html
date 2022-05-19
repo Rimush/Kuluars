@@ -26,23 +26,6 @@
 	{% endif %}
 {% endblock article %}
 
-{% block author %}
-	{% if article.author != None %} 
-		<div class="b-sub-page-article-author">
-			<h3 class="b-sub-page-article-author__header">Автор</h3>
-								
-			<div class="b-sub-page-article-author__image-wrap">
-				<img src="{{ article.author.image.url }}" alt="{{ article.author }}" class="b-sub-page-article-author__image">
-			</div>
-			<div class="b-sub-page-article-author__image-signature">{{ article.author.name }}<br>{{ article.author.surname|upper }}</div>
-			<div class="b-sub-page-article-author__articles">СТАТЬИ АВТОРА<br>(всего на сайте {{ author_articles_count }} стат{{ author_articles_count|rupluralize:"ья,ьи,ей" }})</div>
-			{% for author_article in author_articles %} 
-				<div class="b-sub-page-article-author__article"><a href="{% url 'articles:article' author_article.slug %}" class="b-sub-page-article-author__link">{{ author_article.title }}</a></div>
-			{% endfor %}
-		</div>
-	{% endif %}
-{% endblock author %}
-
 {% block comments %}
 	<a class="b-sub-page-article-content__button" data-fancybox data-src="#comment-add" href="javascript:;">КОММЕНТИРОВАТЬ</a>
 	{% for comment in comments %}  
@@ -98,6 +81,23 @@
 	{% endif %}
 {% endblock earlier %}
 
+{% block author %}
+	{% if article.author != None %} 
+		<div class="b-sub-page-article-author">
+			<h3 class="b-sub-page-article-author__header">Автор</h3>
+								
+			<div class="b-sub-page-article-author__image-wrap">
+				<img src="{{ article.author.image.url }}" alt="{{ article.author }}" class="b-sub-page-article-author__image">
+			</div>
+			<div class="b-sub-page-article-author__image-signature">{{ article.author.name }}<br>{{ article.author.surname|upper }}</div>
+			<div class="b-sub-page-article-author__articles">СТАТЬИ АВТОРА<br>(всего на сайте {{ author_articles_count }} стат{{ author_articles_count|rupluralize:"ья,ьи,ей" }})</div>
+			{% for author_article in author_articles %} 
+				<div class="b-sub-page-article-author__article"><a href="{% url 'articles:article' author_article.slug %}" class="b-sub-page-article-author__link">{{ author_article.title }}</a></div>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endblock author %}
+
 {% block articles %}
 	<div class="b-articles b-articles--indent-top-100">
 		{% for article in more_articles %}
@@ -114,62 +114,6 @@
 		{% endfor %}
 	</div>
 {% endblock articles %}
-
-{% block best-week-articles %}
-	<div class="b-footer-week">
-		<h1 class="b-footer-week__header"><span class="b-footer-week__header-text">ПОПУЛЯРНОЕ ЗА НЕДЕЛЮ</span></h1>
-		<ul class="b-footer-week__articles">
-			{% for article in best_week_articles %}
-				<li class="b-footer-week__article">
-					{% if article.category == 'article' %}
-						<a href="{% url 'articles:article' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
-					{% endif %}
-					{% if article.category == 'news' %}
-						<a href="{% url 'articles:new' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
-					{% endif %}
-					</a>
-				</li>
-			{% empty %}
-				<li class="b-footer-week__article">Пока нет статей</li>
-			{% endfor %}
-		</ul>
-	</div>
-{% endblock best-week-articles %}
-
-{% block random-author %}
-	{% if random_author != None %}
-		<div class="b-footer-author">
-			<h1 class="b-footer-author__header"><span class="b-footer-author__header-text">АВТОРЫ</span></h1>
-			<a href="{% url 'articles:author' random_author.slug %}" class="b-footer-author__link">
-				<img src="{{ random_author.image.url }}" alt="{{ random_author }}" class="b-footer-author__image">
-				<div class="b-footer-author__text">{{ random_author.name }}<br>{{ random_author.surname|upper }}</div>
-			</a>
-		</div>
-	{% endif %}
-{% endblock random-author %}
-
-{% block last-comments %}
-	<div class="b-footer-comments">
-		<h1 class="b-footer-comments__header"><span class="b-footer-comments__header-text">ПОСЛЕДНИЕ КОММЕНТАРИИ </span></h1>
-		<ul class="b-footer-comments__articles">
-			{% for comment in last_comments %}
-				<li class="b-footer-comments__article">
-					{% if comment.article.category == 'article' %}
-						<a href="{% url 'articles:article' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
-					{% endif %}
-					{% if comment.article.category == 'news' %}
-						<a href="{% url 'articles:new' comment.article.slug %}#commnet-{{ comment.id }}" class="b-footer-comments__link">
-					{% endif %}
-						{{ comment.article.title_short }}
-						<span class="b-footer-comments__comment" title="{{ comment.content }}"><span class="b-footer-comments__comment-text">{{ comment.content_short }}</span></span>
-					</a>
-				</li>
-			{% empty %}
-				<li class="b-footer-comments__article"></li>
-			{% endfor %}		
-		</ul>
-	</div>
-{% endblock last-comments %}
 
 {% block random_authors %}
 	<div class="b-author">

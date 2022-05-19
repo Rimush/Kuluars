@@ -1,0 +1,15 @@
+								{% for day in calendar_articles.days %}
+									{% if day.day != 0 %}
+										<li class='calendar__body-dates-item
+											{% if day.now == True %} calendar__body-dates-item--active{% endif %}
+											{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}
+										'>
+										{{ day.day }}
+										{% if day.count != 0 %}
+											<span class="calendar__body-dates-number">{{ day.count }}</span>
+										{% endif %}
+										</li>
+									{% else %}
+										<li class="calendar__body-dates-item"></li>
+									{% endif %}
+								{% endfor %}

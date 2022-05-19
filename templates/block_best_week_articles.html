@@ -1,0 +1,18 @@
+	<div class="b-footer-week">
+		<h1 class="b-footer-week__header"><span class="b-footer-week__header-text">ПОПУЛЯРНОЕ ЗА НЕДЕЛЮ</span></h1>
+		<ul class="b-footer-week__articles">
+			{% for article in best_week_articles %}
+				<li class="b-footer-week__article">
+					{% if article.category == 'article' %}
+						<a href="{% url 'articles:article' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
+					{% endif %}
+					{% if article.category == 'news' %}
+						<a href="{% url 'articles:new' article.slug %}" class="b-footer-week__link">{{ article.title }}</a>
+					{% endif %}
+					</a>
+				</li>
+			{% empty %}
+				<li class="b-footer-week__article">Пока нет статей</li>
+			{% endfor %}
+		</ul>
+	</div>
