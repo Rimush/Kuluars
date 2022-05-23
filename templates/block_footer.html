@@ -27,7 +27,7 @@
 				</div>
 				
 				<div class="b-footer-published">
-					<h1 class="b-footer-published__header">ПОИСК ПУБЛИКАЦИЙ ПО ДАТЕ</h1>
+					<h1 class="b-footer-published__header"><span class="b-footer-published__header-position">ПОИСК ПУБЛИКАЦИЙ ПО ДАТЕ</span></h1>
 					<div class="calendar">
 						<div class="calendar__header">
 
@@ -57,18 +57,24 @@
 							<ul class="calendar__body-dates">
 								{% for day in calendar_articles.days %}
 									{% if day.day != 0 %}
-										<li class='calendar__body-dates-item
-											{% if day.now == True %} calendar__body-dates-item--active{% endif %}
-											{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}
-										'>
+										<li class='calendar__body-dates-item{% if day.now == True %} calendar__body-dates-item--active{% endif %}{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}'>
 										{{ day.day }}
 										{% if day.count != 0 %}
 											<div class="calendar__body-dates-tooltip">
 												<div class="calendar__body-dates-tooltip-count">{{ day.count }}</div>
 												<div class="calendar__body-dates-tooltip-content">
-												{% for article in day.articles %}
-													<div>{{ article.title }}</div>
-												{% endfor %}
+													{% if day.articles|length > 0 %}
+														<div class="calendar__body-dates-tooltip-content-header">Статьи:</div>
+														{% for article in day.articles %}
+															<a class="calendar__body-dates-tooltip-content-link" href="{% url 'articles:article' article.slug %}">{{ article.title }}</a>
+														{% endfor %}
+													{% endif %}
+													{% if day.news|length > 0 %}
+														<div class="calendar__body-dates-tooltip-content-header">Новости:</div>
+														{% for new in day.news %}
+															<a class="calendar__body-dates-tooltip-content-link" href="{% url 'articles:new' new.slug %}">{{ new.title }}</a>
+														{% endfor %}
+													{% endif %}
 												</div>
 											</div>
 										{% endif %}

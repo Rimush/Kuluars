@@ -1,12 +1,25 @@
 								{% for day in calendar_articles.days %}
 									{% if day.day != 0 %}
-										<li class='calendar__body-dates-item
-											{% if day.now == True %} calendar__body-dates-item--active{% endif %}
-											{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}
-										'>
+										<li class='calendar__body-dates-item{% if day.now == True %} calendar__body-dates-item--active{% endif %}{% if day.count != 0 %} calendar__body-dates-item--circle{% endif %}'>
 										{{ day.day }}
 										{% if day.count != 0 %}
-											<span class="calendar__body-dates-number">{{ day.count }}</span>
+											<div class="calendar__body-dates-tooltip">
+												<div class="calendar__body-dates-tooltip-count">{{ day.count }}</div>
+												<div class="calendar__body-dates-tooltip-content">
+													{% if day.articles|length > 0 %}
+														<div class="calendar__body-dates-tooltip-content-header">Статьи:</div>
+														{% for article in day.articles %}
+															<a class="calendar__body-dates-tooltip-content-link" href="{% url 'articles:article' article.slug %}">{{ article.title }}</a>
+														{% endfor %}
+													{% endif %}
+													{% if day.news|length > 0 %}
+														<div class="calendar__body-dates-tooltip-content-header">Новости:</div>
+														{% for new in day.news %}
+															<a class="calendar__body-dates-tooltip-content-link" href="{% url 'articles:new' new.slug %}">{{ new.title }}</a>
+														{% endfor %}
+													{% endif %}
+												</div>
+											</div>
 										{% endif %}
 										</li>
 									{% else %}

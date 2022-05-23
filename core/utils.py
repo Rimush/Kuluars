@@ -8,4 +8,3 @@ def slugify(string):
                 'э': 'e', 'ю': 'yu', 'я': 'ya', ' ': '-',}
     #return ''.join(alphabet.get(w, w) for w in filter(str.isalpha, string.lower()))
     return ''.join(alphabet.get(w.lower(), w.lower()) for w in string if (w.isalpha() or w.isspace()))
-    

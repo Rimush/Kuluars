@@ -1,3 +1,11 @@
 from django.shortcuts import render
+from .models import Settings
 
-# Create your views here.
+def load_settings(request):
+    return {'site_settings': Settings.load()}
+    
+def video_products(request):
+    
+    context = {}
+    
+    return render(request, 'page_articles__list.html', context)

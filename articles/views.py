@@ -40,7 +40,7 @@ def calendar(day=None, month=None, year=None):
 
     if month == None:
         month = datetime.now().month
-    print(month)
+
     if year == None:
         year = datetime.now().year
         
@@ -76,7 +76,7 @@ def calendar(day=None, month=None, year=None):
         else:
             now = False
             
-        days['days'].append({'day': current_day, 'now': now, 'count': len(articles.filter(created__day=current_day)), 'articles': articles.filter(created__day=current_day)})
+        days['days'].append({'day': current_day, 'now': now, 'count': len(articles.filter(created__day=current_day)), 'news': articles.filter(category='news').filter(created__day=current_day), 'articles': articles.filter(category='article').filter(created__day=current_day)})
         
     return days
     
@@ -134,7 +134,7 @@ def best_week_articles():
 def index(request):
     articles = Article.objects.filter(category='article').order_by('-created')
     news = Article.objects.filter(category='news').order_by('-created')
-    print(calendar())
+
     context = {}
     context.update({'articles': articles})
     context.update({'news': news})
